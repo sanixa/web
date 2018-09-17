@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap 4, from LayoutIt!</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">  
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   	  <style type="text/css">
+	 img {
+	    padding: 0;
+	    display: block;
+	    margin: 0 auto auto 0;
+	    max-height: 100%;
+	    max-width: 100%;
+	}
+	  </style>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item active">
+						<a href="/route/">Home</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="/route_config/">config</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="/route/?t=c" type="submit" name = "c">
+						create environment
+		    				</a>
+					</li>
+					<li class="breadcrumb-item">
+						<a href="/route/?t=d" type="submit" name = "d" >
+						delete environment
+		    				</a>
+					</li>
+				</ol>
+			</nav>
+		</div>
+		<div class="col-md-6">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+                    <h2>trace routeing</h2>
+		</div>
+	</div>
+	<div class="row">
+                {% load static %}
+		<div class="col-md-3">
+	<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns1 }} data-title="namespace1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
+
+			<h2>
+				Heading
+                               
+			</h2>
+			<p>
+
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+		<div class="col-md-3">
+<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs1 }} data-title="open vSwitch1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a>  
+			<h2>
+				Heading
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p> 
+			<button type="button" class="btn btn-outline-primary btn-lg">
+				Button
+			</button>
+		</div>
+		<div class="col-md-3">
+<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs2 }} data-title="open vSwitch2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a> 
+			<h2>
+				Heading
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p> 
+			<button type="button" class="btn btn-outline-primary btn-lg">
+				Button
+			</button>
+		</div>
+		<div class="col-md-3">
+<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns2 }} data-title="namespace2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
+			<h2>
+				Heading
+			</h2>
+			<p>
+				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+			</p>
+			<p>
+				<a class="btn" href="#">View details »</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/scripts.js"></script>
+<script>
+$(function() {  
+    $("[data-toggle='popover']").popover({  
+        html : true,        
+        delay:{show:500, hide:1000},  
+   
+    });  
+});     
+ 
+  
+  
+</script>
+  </body>
+</html>
