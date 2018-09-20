@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>Bootstrap 实例 - 弹出框（Popover）插件</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	  <style type="text/css">
+	 img {
+	    padding: 0;
+	    display: block;
+	    margin: 0 auto auto 0;
+	    max-height: 100%;
+	    max-width: 100%;
+	}
+	  </style>
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<nav>
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item">
+						<a href="/route/">Home</a>
+					</li>
+					<li class="breadcrumb-item active">
+						<a href="#">config</a>
+					</li>
+				</ol>
+			</nav>
+		</div>
+		<div class="col-md-6">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<h3>
+				驗證環境設定
+			</h3>
+		</div>
+	</div>
+	<div class="row">
+                {% load static %}
+		<div class="col-md-3">
+			<img  alt="My image" src="{% static "images/ns.png" %}"/>
+		</div>
+		<div class="col-md-3">
+			<img  alt="My image" src="{% static "images/route.png" %}"/>
+		</div>
+		<div class="col-md-3">
+			<img  alt="My image" src="{% static "images/route.png" %}"/>
+		</div>
+		<div class="col-md-3">
+			<img  alt="My image" src="{% static "images/ns.png" %}"/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<form action="/route_config/" method="post">
+                        {% csrf_token %}
+                         <div class="col-md-12">
+			    <div class="col-md-3">
+				<div class="form-group">
+					 
+					<label>
+						網路命名空間名稱
+					</label>
+					<input class="form-control" name="ns-name1" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						端口位址
+					</label>
+					<input class="form-control" name="ns-port-address1" type="text" />
+				</div>
+			    </div>
+			    <div class="col-md-3">
+				<div class="form-group">
+					 
+					<label>
+						Open vSwitch 名稱
+					</label>
+					<input class="form-control" name="ovs-name1" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						Open vSwitch 端口名稱
+					</label>
+					<input class="form-control" name="ovs-port-name1" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						OpenFlow 端口號碼
+					</label>
+					<input class="form-control" name="openflow-port-number1" type="text" />
+				</div>
+			    </div>
+
+			    <div class="col-md-3">
+				<div class="form-group">
+					 
+					<label>
+						Open vSwitch 名稱
+					</label>
+					<input class="form-control" name="ovs-name2" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						Open vSwitch 端口名稱
+					</label>
+					<input class="form-control" name="ovs-port-name2" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						OpenFlow 端口號碼
+					</label>
+					<input class="form-control" name="openflow-port-number2" type="text" />
+				</div>
+
+			    </div>
+                            <div class="col-md-3">
+				<div class="form-group">
+					 
+					<label>
+						網路命名空間名稱
+					</label>
+					<input class="form-control" name="ns-name2" type="text" />
+				</div>
+				<div class="form-group">
+					 
+					<label>
+						端口位址
+					</label>
+					<input class="form-control" name="ns-port-address2" type="text" />
+				</div>
+			    </div>
+                          </div>
+				<button type="submit" class="btn btn-primary">
+					送出
+				</button>
+				<button type="button" id="form" class="btn btn-primary">
+					回上頁
+				</button>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+      $("#form").click(function(){
+          document.location.href="/route";
+      });
+    });
+</script>
+</body>
+</html>
+
+
