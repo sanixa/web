@@ -4,7 +4,9 @@ import content.modsecurity.func as mod
 import content.route.func as r
 from content.models import ovs1,ovs2,ns1,ns2
 import subprocess as sub
-import os,commands
+import os,time
+import queue
+from threading import Thread
 # Create your views here.
 
 def modsecurity(request):
@@ -30,6 +32,12 @@ def mod_m(request):
 def mod_m_re(request):
     mod.restart_nginx()
     return render(request, 'mod_m_re.html',{})
+def receive(p,q):
+    output = sub.check_output('ip netns exec ns12 tcpdump -i p02 -c 1 icmp', shell=True)
+    q.put(output)
+def send(p,q):
+    output = sub.check_output('ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
+    q.put(output)
 def route(request):
     ctx = {}
     if 't' in request.GET and request.GET['t'] == 'c':
@@ -37,9 +45,18 @@ def route(request):
     if 't' in request.GET and request.GET['t'] == 'd':
         ctx['route'] = r.delete()
     if 't' in request.GET and request.GET['t'] == 's':
-       (status, output) = commands.getstatusoutput('ping -c 1 8.8.8.8')
-       ctx['ping_s'] = status
-       ctx['ping_o'] = output
+       que = queue.Queue()
+       t1 = Thread(target=receive, args=(1,que))
+       t1.start()
+       
+       t2 = Thread(target=send, args=(1,que))
+       t2.start()
+       
+       t2.join()
+       t1.join()
+       ctx['ping_o'] = que.get()
+       ctx['rec_o'] = que.get()
+
     if set(ovs1.objects.all()) == set([]):
         ctx['ovs1'] = 'noContent'
         ctx['ovs2'] = 'noContent'
