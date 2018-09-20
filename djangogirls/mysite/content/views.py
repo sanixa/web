@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.views.decorators import csrf
 import content.modsecurity.func as mod
+import content.route.func as r
 from content.models import ovs1,ovs2,ns1,ns2
+import subprocess as sub
+import os,commands
 # Create your views here.
 
 def modsecurity(request):
@@ -29,10 +32,14 @@ def mod_m_re(request):
     return render(request, 'mod_m_re.html',{})
 def route(request):
     ctx = {}
-    if 't' in request.GET and request.GET['t'] == 'd':
-        pass
     if 't' in request.GET and request.GET['t'] == 'c':
-        pass
+        ctx['route'] = r.create() 
+    if 't' in request.GET and request.GET['t'] == 'd':
+        ctx['route'] = r.delete()
+    if 't' in request.GET and request.GET['t'] == 's':
+       (status, output) = commands.getstatusoutput('ping -c 1 8.8.8.8')
+       ctx['ping_s'] = status
+       ctx['ping_o'] = output
     if set(ovs1.objects.all()) == set([]):
         ctx['ovs1'] = 'noContent'
         ctx['ovs2'] = 'noContent'
@@ -64,4 +71,7 @@ def route_config(request):
         ns2.objects.create(name=request.POST['ns-name2'], address=request.POST['ns-port-address2'])
     return render(request, 'route_config.html',{})
 def temp(request):
-    return render(request, 'temp.html',{})
+    
+    p = sub.Popen(['ping', '-c 4 8.8.8.8'], stdout = sub.PIPE, stderr = sub.PIPE)
+    output, errors = p.communicate()
+    return render(request, 'temp.html',{'aaa': output, 'bbb': errors})

@@ -36,16 +36,16 @@
 						<a href="/route/">Home</a>
 					</li>
 					<li class="breadcrumb-item">
-						<a href="/route_config/">config</a>
+						<a href="/route_config/">Config</a>
 					</li>
 					<li class="breadcrumb-item">
-						<a href="/route/?t=c" type="submit" name = "c">
-						create environment
+						<a href="/route/?t=c" type="submit" name = "c" onclick = 'route()'>
+						Create environment
 		    				</a>
 					</li>
 					<li class="breadcrumb-item">
-						<a href="/route/?t=d" type="submit" name = "d" >
-						delete environment
+						<a href="/route/?t=d" type="submit" name = "d" onclick = 'route()'>
+						Delete environment
 		    				</a>
 					</li>
 				</ol>
@@ -65,16 +65,12 @@
 	<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns1 }} data-title="namespace1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
 
 			<h2>
-				Heading
+				sending
                                
 			</h2>
-			<p>
+			<input type ="button" onclick="javascript:location.href='/route/?t=s'" value="send"></input>
 
-				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p>
+                        <p>{{ ping_o }} </p>
 		</div>
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs1 }} data-title="open vSwitch1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a>  
@@ -133,8 +129,9 @@ $(function() {
     });  
 });     
  
-  
-  
+function route() { 
+  alert('{{ route }}'); 
+} 
 </script>
   </body>
 </html>
