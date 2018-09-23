@@ -65,24 +65,19 @@
 	<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns1 }} data-title="namespace1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
 
 			<h2>
-				sending
+				sender
                                
 			</h2>
 			<input type ="button" onclick="javascript:location.href='/route/?t=s'" value="send"></input>
 
-                        <p>{{ ping_o }} </p>
+                        <p>{{ send_o }} </p>
 		</div>
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs1 }} data-title="open vSwitch1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a>  
 			<h2>
-				Heading
+				flow action
 			</h2>
-			<p>
-				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p> 
+                        <p> {{ ovs1_output }} </p>
 			<button type="button" class="btn btn-outline-primary btn-lg">
 				Button
 			</button>
@@ -90,14 +85,9 @@
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs2 }} data-title="open vSwitch2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a> 
 			<h2>
-				Heading
+				flow action
 			</h2>
-			<p>
-				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p> 
+			<p> {{ ovs2_output }} </p> 
 			<button type="button" class="btn btn-outline-primary btn-lg">
 				Button
 			</button>
@@ -105,15 +95,10 @@
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns2 }} data-title="namespace2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
 			<h2>
-				Heading
+				receiver
 			</h2>
-			<p>
-				Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-			</p>
-			<p>
-				<a class="btn" href="#">View details »</a>
-			</p>
-                       {{ rec_o }}
+			<p> {{ rec_o }} </p> 
+                       
 		</div>
 	</div>
 </div>

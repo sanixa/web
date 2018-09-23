@@ -33,10 +33,10 @@ def mod_m_re(request):
     mod.restart_nginx()
     return render(request, 'mod_m_re.html',{})
 def receive(p,q):
-    output = sub.check_output('ip netns exec ns12 tcpdump -i p02 -c 1 icmp', shell=True)
+    output = sub.check_output('sudo ip netns exec ns12 tcpdump -i p02 -c 1 icmp', shell=True)
     q.put(output)
 def send(p,q):
-    output = sub.check_output('ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
+    output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
     q.put(output)
 def route(request):
     ctx = {}
@@ -54,9 +54,14 @@ def route(request):
        
        t2.join()
        t1.join()
-       ctx['ping_o'] = que.get()
+       ctx['send_o'] = que.get()
        ctx['rec_o'] = que.get()
 
+       output = sub.check_output('sudo ovs-appctl ofproto/trace br01 in_port=100,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
+       ctx['ovs1_output'] = output
+       output = sub.check_output('sudo ovs-appctl ofproto/trace br02 in_port=1,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
+       ctx['ovs2_output'] = output
+       
     if set(ovs1.objects.all()) == set([]):
         ctx['ovs1'] = 'noContent'
         ctx['ovs2'] = 'noContent'
