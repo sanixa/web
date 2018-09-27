@@ -7,6 +7,7 @@ import subprocess as sub
 import os,time
 import queue
 from threading import Thread
+import multiprocessing as mp
 # Create your views here.
 
 def modsecurity(request):
@@ -32,10 +33,13 @@ def mod_m(request):
 def mod_m_re(request):
     mod.restart_nginx()
     return render(request, 'mod_m_re.html',{})
-def receive(p,q):
+def receive(q,v,l):
     output = sub.check_output('sudo ip netns exec ns12 tcpdump -i p02 -c 1 icmp', shell=True)
+    v.value += 1
     q.put(output)
-def send(p,q):
+def send(q,v):
+    while v.value == 0:
+        pass
     output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
     q.put(output)
 def route(request):
@@ -45,18 +49,21 @@ def route(request):
     if 't' in request.GET and request.GET['t'] == 'd':
         ctx['route'] = r.delete()
     if 't' in request.GET and request.GET['t'] == 's':
-       que = queue.Queue()
-       t1 = Thread(target=receive, args=(1,que))
+       q = queue.Queue()
+       l = mp.Lock()
+       v = mp.Value('i', 0)
+       t1 = mp.Process(target=receive, args=(q,v,l))
+       t2 = mp.Process(target=send, args=(q,v))
        t1.start()
-       
-       t2 = Thread(target=send, args=(1,que))
        t2.start()
-       
+       #output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
+  
        t2.join()
        t1.join()
-       ctx['send_o'] = que.get()
-       ctx['rec_o'] = que.get()
+       ctx['send_o'] = q.get()
+       ctx['rec_o'] = q.get()
 
+       
        output = sub.check_output('sudo ovs-appctl ofproto/trace br01 in_port=100,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
        ctx['ovs1_output'] = output
        output = sub.check_output('sudo ovs-appctl ofproto/trace br02 in_port=1,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
@@ -94,6 +101,3 @@ def route_config(request):
     return render(request, 'route_config.html',{})
 def temp(request):
     
-    p = sub.Popen(['ping', '-c 4 8.8.8.8'], stdout = sub.PIPE, stderr = sub.PIPE)
-    output, errors = p.communicate()
-    return render(request, 'temp.html',{'aaa': output, 'bbb': errors})
