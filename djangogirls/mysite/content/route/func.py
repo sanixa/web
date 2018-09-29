@@ -1,5 +1,9 @@
 from content.models import ovs1,ovs2,ns1,ns2
 import os
+import queue
+from threading import Thread,Semaphore
+import multiprocessing as mp
+import subprocess as sub
 
 def create():
     if set(ovs1.objects.all()) == set([]) or set(ovs2.objects.all()) == set([]) or set(ns1.objects.all()) == set([]) or set(ns2.objects.all()) == set([]):
@@ -74,4 +78,58 @@ def delete():
         os.system(c)
 
         return "success"
+
+def content():
+    q = queue.Queue()
+    s1 = Semaphore(0)
+    s2 = Semaphore(1)
+    t1 = Thread(target=_receive, args=(q,s1,s2))
+    t2 = Thread(target=_send, args=(q,s1,s2))
+    t1.start()
+    t2.start()
+    #output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
+    
+    t2.join()
+    t1.join()
+    ctx = {}
+    ctx['send_o'] = q.get()
+    ctx['rec_o'] = q.get()
+
+    ovs1_content = ovs1.objects.all()[0]
+    ovs2_content = ovs2.objects.all()[0]
+    ns1_content = ns1.objects.all()[0]
+    ns2_content = ns2.objects.all()[0]
+    c = 'sudo ovs-appctl ofproto/trace ' + ovs1_content.name + ' in_port=' + ovs1_content.number + ' -generate'
+    output = sub.check_output(c, shell=True)
+    str1 = "actions"
+    output = output.decode()
+    output = output[output.find(str1) - 9:output.find('\n',output.find(str1))]
+    ctx['ovs1_output'] = output
+    temp = sub.check_output('sudo ip netns exec ns12 ifconfig | grep HWaddr', shell=True)
+    temp = temp[len(temp)-20:len(temp)-3]
+    c = 'sudo ovs-appctl ofproto/trace ' + ovs2_content.name + ' in_port=1,dl_dst=' + temp.decode() + ' -generate'
+    output = sub.check_output(c, shell=True)
+    output = output.decode()
+    output = output[output.find(str1) - 9:output.find('\n',output.find(str1))]
+    ctx['ovs2_output'] = output
+
+    return ctx
+
+def _send(q,s1,s2):
+    #s1.acquire()
+    ns1_content = ns1.objects.all()[0]
+    ns2_content = ns2.objects.all()[0]
+    ns2_content.address = ns2_content.address[:ns2_content.address.find('/')]
+    c = 'sudo ip netns exec ' + ns1_content.name + ' ping -c 1 ' + ns2_content.address
+    output = sub.check_output(c , shell=True)
+    q.put(output)
+
+def _receive(q,s1,s2):
+    ovs2_content = ovs2.objects.all()[0]
+    ns2_content = ns2.objects.all()[0]
+    c = 'sudo ip netns exec ' + ns2_content.name + ' tcpdump -i ' + ovs2_content.port + ' -c 1 icmp'
+    output = sub.check_output(c, shell=True)
+    #s1.release()
+    q.put(output)
+
 

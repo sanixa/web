@@ -5,9 +5,7 @@ import content.route.func as r
 from content.models import ovs1,ovs2,ns1,ns2
 import subprocess as sub
 import os,time
-import queue
-from threading import Thread
-import multiprocessing as mp
+
 # Create your views here.
 
 def modsecurity(request):
@@ -33,15 +31,7 @@ def mod_m(request):
 def mod_m_re(request):
     mod.restart_nginx()
     return render(request, 'mod_m_re.html',{})
-def receive(q,v,l):
-    output = sub.check_output('sudo ip netns exec ns12 tcpdump -i p02 -c 1 icmp', shell=True)
-    v.value += 1
-    q.put(output)
-def send(q,v):
-    while v.value == 0:
-        pass
-    output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
-    q.put(output)
+
 def route(request):
     ctx = {}
     if 't' in request.GET and request.GET['t'] == 'c':
@@ -49,25 +39,11 @@ def route(request):
     if 't' in request.GET and request.GET['t'] == 'd':
         ctx['route'] = r.delete()
     if 't' in request.GET and request.GET['t'] == 's':
-       q = queue.Queue()
-       l = mp.Lock()
-       v = mp.Value('i', 0)
-       t1 = mp.Process(target=receive, args=(q,v,l))
-       t2 = mp.Process(target=send, args=(q,v))
-       t1.start()
-       t2.start()
-       #output = sub.check_output('sudo ip netns exec ns11 ping -c 1 192.168.1.101', shell=True)
-  
-       t2.join()
-       t1.join()
-       ctx['send_o'] = q.get()
-       ctx['rec_o'] = q.get()
-
-       
-       output = sub.check_output('sudo ovs-appctl ofproto/trace br01 in_port=100,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
-       ctx['ovs1_output'] = output
-       output = sub.check_output('sudo ovs-appctl ofproto/trace br02 in_port=1,dl_dst=22:03:81:9d:7f:a0 -generate', shell=True)
-       ctx['ovs2_output'] = output
+        result = r.content()
+        ctx['send_o'] = result['send_o']
+        ctx['rec_o'] = result['rec_o']
+        ctx['ovs1_output'] = result['ovs1_output']
+        ctx['ovs2_output'] = result['ovs2_output']
        
     if set(ovs1.objects.all()) == set([]):
         ctx['ovs1'] = 'noContent'
@@ -100,4 +76,4 @@ def route_config(request):
         ns2.objects.create(name=request.POST['ns-name2'], address=request.POST['ns-port-address2'])
     return render(request, 'route_config.html',{})
 def temp(request):
-    
+    return render(request, 'temp.html',{})
