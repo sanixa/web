@@ -13,9 +13,9 @@ def create():
         ovs2_content = ovs2.objects.all()[0]
         ns1_content = ns1.objects.all()[0]
         ns2_content = ns2.objects.all()[0]
-        c = "sudo ovs-vsctl add-br " + ovs1_content.name
+        c = "sudo ovs-vsctl --may-exist add-br " + ovs1_content.name
         os.system(c)
-        c = "sudo ovs-vsctl add-port " + ovs1_content.name + " " + ovs1_content.port
+        c = "sudo ovs-vsctl --may-exist add-port " + ovs1_content.name + " " + ovs1_content.port
         os.system(c)
         c = "sudo ovs-vsctl set Interface " + ovs1_content.port + " type=internal ofport_request=" + ovs1_content.number
         os.system(c)
@@ -29,9 +29,9 @@ def create():
         os.system(c)
 
 
-        c = "sudo ovs-vsctl add-br " + ovs2_content.name
+        c = "sudo ovs-vsctl --may-exist add-br " + ovs2_content.name
         os.system(c)
-        c = "sudo ovs-vsctl add-port " + ovs2_content.name + " " + ovs2_content.port
+        c = "sudo ovs-vsctl --may-exist add-port " + ovs2_content.name + " " + ovs2_content.port
         os.system(c)
         c = "sudo ovs-vsctl set Interface " + ovs2_content.port + " type=internal ofport_request=" + ovs2_content.number
         os.system(c)
@@ -45,11 +45,11 @@ def create():
         os.system(c)
 
 
-        c = "sudo ovs-vsctl add-port " + ovs1_content.name + " patch1"
+        c = "sudo ovs-vsctl --may-exist add-port " + ovs1_content.name + " patch1"
         os.system(c)
         c = "sudo ovs-vsctl set interface patch1 type=patch"
         os.system(c)
-        c = "sudo ovs-vsctl add-port " + ovs2_content.name + " patch2"
+        c = "sudo ovs-vsctl --may-exist add-port " + ovs2_content.name + " patch2"
         os.system(c)
         c = "sudo ovs-vsctl set interface patch2 type=patch"
         os.system(c)
@@ -68,9 +68,9 @@ def delete():
         ovs2_content = ovs2.objects.all()[0]
         ns1_content = ns1.objects.all()[0]
         ns2_content = ns2.objects.all()[0]
-        c = "sudo ovs-vsctl del-br " + ovs1_content.name
+        c = "sudo ovs-vsctl --if-exist del-br " + ovs1_content.name
         os.system(c)
-        c = "sudo ovs-vsctl del-br " + ovs2_content.name
+        c = "sudo ovs-vsctl --if-exist del-br " + ovs2_content.name
         os.system(c)
         c = "sudo ip netns del " + ns1_content.name
         os.system(c)
@@ -103,6 +103,8 @@ def content():
     output = sub.check_output(c, shell=True)
     str1 = "actions"
     output = output.decode()
+    output = output.replace(' ', '')
+    ctx['ovs1_detail'] = output.replace('\n', '<br>')
     output = output[output.find(str1) - 9:output.find('\n',output.find(str1))]
     ctx['ovs1_output'] = output
     temp = sub.check_output('sudo ip netns exec ns12 ifconfig | grep HWaddr', shell=True)
@@ -110,10 +112,28 @@ def content():
     c = 'sudo ovs-appctl ofproto/trace ' + ovs2_content.name + ' in_port=1,dl_dst=' + temp.decode() + ' -generate'
     output = sub.check_output(c, shell=True)
     output = output.decode()
+    output = output.replace(' ', '')
+    ctx['ovs2_detail'] = output.replace('\n', '<br>')
     output = output[output.find(str1) - 9:output.find('\n',output.find(str1))]
     ctx['ovs2_output'] = output
 
     return ctx
+
+def created():
+    ovs1_content = ovs1.objects.all()[0]
+    ovs2_content = ovs2.objects.all()[0]
+    ns1_content = ns1.objects.all()[0]
+    ns2_content = ns2.objects.all()[0]
+    output1 = sub.check_output('sudo ovs-vsctl show' , shell=True)
+    output2 = sub.check_output('sudo ip netns' , shell=True)
+    output1 = output1.decode()
+    output2 = output2.decode()
+    if output1.find("Bridge \"" + ovs1_content.name + "\"") == -1 or output1.find("Bridge \"" + ovs2_content.name + "\"") == -1:
+        return False
+    elif output2.find(ns1_content.name) == -1 or output2.find(ns2_content.name):
+        return False
+    else:
+        return True
 
 def _send(q,s1,s2):
     #s1.acquire()

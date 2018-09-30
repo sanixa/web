@@ -53,7 +53,7 @@
 		</div>
 		<div class="col-md-6">
 		</div>
-	</div>
+	</div> 
 	<div class="row">
 		<div class="col-md-12">
                     <h2>trace routeing</h2>
@@ -68,8 +68,10 @@
 				sender
                                
 			</h2>
-			<input type ="button" onclick="javascript:location.href='/route/?t=s'" value="send"></input>
-
+                       {% if created %}
+			<button type ="button" class="btn btn-outline-primary btn-lg" onclick="javascript:location.href='/route/?t=s'" value="send">Send</button>
+			{% else %}
+			{% endif %}
                         <p>{{ send_o }} </p>
 		</div>
 		<div class="col-md-3">
@@ -78,8 +80,8 @@
 				flow action
 			</h2>
                         <p> {{ ovs1_output }} </p>
-			<button type="button" class="btn btn-outline-primary btn-lg">
-				Button
+			<button type="button" class="btn btn-outline-primary btn-lg" data-toggle="popover" data-placement="bottom" title="result" data-content= {{ ovs1_detail }}>
+				Detail
 			</button>
 		</div>
 		<div class="col-md-3">
@@ -88,8 +90,8 @@
 				flow action
 			</h2>
 			<p> {{ ovs2_output }} </p> 
-			<button type="button" class="btn btn-outline-primary btn-lg">
-				Button
+			<button type="button" class="btn btn-outline-primary btn-lg" data-toggle="popover" data-placement="bottom" title="result" data-content= {{ ovs2_detail }} >
+				Detail
 			</button>
 		</div>
 		<div class="col-md-3">

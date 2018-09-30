@@ -38,23 +38,30 @@ def route(request):
         ctx['route'] = r.create() 
     if 't' in request.GET and request.GET['t'] == 'd':
         ctx['route'] = r.delete()
-    if 't' in request.GET and request.GET['t'] == 's':
-        result = r.content()
-        ctx['send_o'] = result['send_o']
-        ctx['rec_o'] = result['rec_o']
-        ctx['ovs1_output'] = result['ovs1_output']
-        ctx['ovs2_output'] = result['ovs2_output']
-       
+
+
     if set(ovs1.objects.all()) == set([]):
         ctx['ovs1'] = 'noContent'
         ctx['ovs2'] = 'noContent'
         ctx['ns1'] = 'noContent'
         ctx['ns2'] = 'noContent'
+        ctx['created'] = False
     else:
         ovs1_content = ovs1.objects.all()[0]
         ovs2_content = ovs2.objects.all()[0]
         ns1_content = ns1.objects.all()[0]
         ns2_content = ns2.objects.all()[0]
+
+        if 't' in request.GET and request.GET['t'] == 's':
+            result = r.content()
+            ctx['send_o'] = result['send_o']
+            ctx['rec_o'] = result['rec_o']
+            ctx['ovs1_output'] = result['ovs1_output']
+            ctx['ovs2_output'] = result['ovs2_output']
+            ctx['ovs1_detail'] = result['ovs1_detail']
+            ctx['ovs2_detail'] = result['ovs2_detail']
+        ctx['created'] = r.created()
+            
         ctx['ovs1'] = str('openvSwitchName:') + ovs1_content.name + '<br>' + str('openvSwitchInterfaceName:') + ovs1_content.port + '<br>' + str('openvSwitchOpenflowNumber:') + ovs1_content.number             
         ctx['ovs2'] = str('openvSwitchName:') + ovs2_content.name + '<br>' + str('openvSwitchInterfaceName:') + ovs2_content.port + '<br>' + str('openvSwitchOpenflowNumber:') + ovs2_content.number              
         ctx['ns1'] = str('nameSpaceName:') + ns1_content.name + '<br>' + str('nameSpaceInterfaceName:') + ovs1_content.port + '<br>' + str('nameSpaceAddress:') + ns1_content.address             
