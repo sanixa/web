@@ -24,3 +24,12 @@ class ns2(models.Model):
     address = models.GenericIPAddressField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+class command(models.Model):
+    address = models.GenericIPAddressField()
+    user = models.CharField(max_length=100)
+    passwd = models.CharField(max_length=100)
+    bridge = models.CharField(max_length=100)
+    interface = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+

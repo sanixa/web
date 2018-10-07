@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap 4, from LayoutIt!</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">  
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+   	  <style type="text/css">
+	 img {
+	    padding: 0;
+	    display: block;
+	    margin: 0 auto auto 0;
+	    max-height: 100%;
+	    max-width: 100%;
+	}
+	  </style>
+  </head>
+  <body>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="row">
+				<div class="col-md-6">
+					<nav>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="/command/">Home</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="/command_config/">Config</a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+				<div class="col-md-6">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3>
+						參數設定
+					</h3>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<form action="/command_config/" method="post">
+                                        {% csrf_token %}
+ 						<div class="form-group">
+					 
+						<label>
+							Opendaylight IP
+						</label>
+						<input class="form-control" name="ip" type="text" />
+						</div>
+						<div class="form-group">
+					 
+						<label>
+							Opendaylight 使用者名稱
+						</label>
+						<input class="form-control" name="user" type="text" />
+						</div>
+						<div class="form-group">
+					 
+						<label>
+							Opendaylight 密碼
+						</label>
+						<input class="form-control" name="passwd" type="text" />
+						</div>
+						<div class="form-group">
+					 
+						<label>
+							open vSwitch 網橋名稱
+						</label>
+						<input class="form-control" name="bridge" type="text" />
+						</div>
+						<div class="form-group">
+					 
+						<label>
+							網卡名稱
+						</label>
+						<input class="form-control" name="interface" type="text" />
+						</div>
+						<button type="submit" class="btn btn-primary">
+							送出
+						</button>
+						<button type="button" id="form" class="btn btn-primary">
+							回上頁
+						</button>
+					</form>
+				</div>
+				<div class="col-md-6">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+      $("#form").click(function(){
+          document.location.href="/command/";
+      });
+    });
+</script>
+  </body>
+</html>

@@ -3,6 +3,7 @@ from django.views.decorators import csrf
 import content.modsecurity.func as mod
 import content.route.func as r
 from content.models import ovs1,ovs2,ns1,ns2
+from content.models import command as com
 import subprocess as sub
 import os,time
 
@@ -82,5 +83,15 @@ def route_config(request):
         ns.delete()
         ns2.objects.create(name=request.POST['ns-name2'], address=request.POST['ns-port-address2'])
     return render(request, 'route_config.html',{})
+
+def command(request):
+    return render(request, 'command.html',{})
+def command_config(request):
+    if request.POST:
+        c = com.objects.all()
+        c.delete()
+        com.objects.create(address=request.POST['ip'], user=request.POST['user'], passwd=request.POST['passwd'], bridge=request.POST['bridge'], interface=request.POST['interface'])
+    return render(request, 'command_config.html',{})
+
 def temp(request):
     return render(request, 'temp.html',{})
