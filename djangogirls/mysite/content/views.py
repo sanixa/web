@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators import csrf
 import content.modsecurity.func as mod
 import content.route.func as r
+import content.command.func as c
 from content.models import ovs1,ovs2,ns1,ns2
 from content.models import command as com
 import subprocess as sub
@@ -85,7 +86,19 @@ def route_config(request):
     return render(request, 'route_config.html',{})
 
 def command(request):
-    return render(request, 'command.html',{})
+    result = ""
+    if request.POST:
+        if request.POST['c'].find(" ") == -1:
+            result = "command error"
+        elif c.init() == "no data":
+            result = "not set environment variable"
+        else:
+            t = request.POST['c'].split(' ')
+            result = c.main(t[0], t[1])
+    return render(request, 'command.html',{
+                  'result': result,
+                 })
+
 def command_config(request):
     if request.POST:
         c = com.objects.all()
