@@ -32,7 +32,7 @@ def br_id_find():
     global USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X GET --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operational/opendaylight-inventory:nodes/"
     output = subprocess.check_output(command, shell=True)
-    j = json.loads(output)
+    j = json.loads(output.decode('utf-8'))
     i = 0
     while True:
         try:
@@ -95,7 +95,8 @@ def xml2(filename, col1, col2, content):  #col1 out col2 in
 
 def modifity(key,action):
     xml("content/command/add.xml", key, action)
-    br_id_set()
+    if br_id_set() == "error":
+        return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:add-flow"
     os.system(command)
@@ -107,7 +108,8 @@ def modifity(key,action):
 
 def no_modifity(key,action):
     xml("content/command/add.xml", key, action)
-    br_id_set()
+    if br_id_set() == "error":
+        return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:remove-flow"
     os.system(command)
@@ -116,12 +118,13 @@ def no_modifity(key,action):
     ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
     if ftable == "":
         return "correct"
-    result = flow._verification(xdict, ftable, count)
+    result = "correct" if flow._verification(xdict, ftable, count) == "error" else "error"
     return result
 
 def modifity_2l(key1, key2, action):
     xml2("add.xml", key1, key2, action)
-    br_id_set()
+    if br_id_set() == "error":
+        return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:add-flow"
     os.system(command)
@@ -133,7 +136,8 @@ def modifity_2l(key1, key2, action):
 
 def no_modifity_2l(key1, key2,action):
     xml2("add.xml", key1, key2, action)
-    br_id_set()
+    if br_id_set() == "error":
+        return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:remove-flow"
     os.system(command)
@@ -142,7 +146,7 @@ def no_modifity_2l(key1, key2,action):
     ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
     if ftable == "":
         return "correct"
-    result = flow._verification(xdict, ftable, count)
+    result = "correct" if flow._verification(xdict, ftable, count) == "error" else "error"
     return result
 
 def switch(arg):
@@ -151,13 +155,13 @@ def switch(arg):
     s = "ovs-vsctl set bridge " + BRIDGE_NAME +" other-config:datapath-id=" + str(arg)
     os.system(s)
 
-    s = "ovs-vsctl show > temp"
-    os.system(s)
+    command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
+    os.system(command)
     f = open('temp', 'r')
     for line in f:
-        if line.find(BRIDGE_NAME) != -1:
-            return "y"
-    return "n"
+        if "other_config" in line and "datapath-id=\"" + arg + "\"" in line:
+            return "correct"
+    return "error"
 
 def no_switch(dpid):
     global BRIDGE_NAME 
@@ -169,23 +173,21 @@ def no_switch(dpid):
     f = open('temp', 'r')
     for line in f:
         if line.find(BRIDGE_NAME) != -1:
-            return "n"
-    return "y"
+            return "error"
+    return "correct"
 
 def active(act):
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
-    if act == "True":
+    if act == "True" or act == "true":
         command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:add-flow"
         os.system(command)
 
         xdict = flow._xml2dict(TEMPFILE)
-        ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
-        fid = flow._flow_id(xdict, ftable, count)
-        if fid == -1:
-            return "error"
-        result = flow._verification(xdict, ftable, fid)
+        ftable,count = flow._flow_data('ovs-ofctl dump-flows '+ BRIDGE_NAME)
+        result = flow._verification(xdict, ftable, count)
         return result
-    elif act == "False":
+
+    elif act == "False" or act == "false":
         command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:remove-flow"
         os.system(command)
 
@@ -193,42 +195,11 @@ def active(act):
         ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
         if ftable == "":
             return "correct"
-        fid = flow._flow_id(xdict, ftable, count)
-        if fid == -1:
-            return "correct"
-        else:
-            return "error"
-    else:
-        return "input error"
-
-def no_active(act):
-    global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
-    if act == "True":
-        command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:remove-flow"
-        os.system(command)
-
-        xdict = flow._xml2dict(TEMPFILE)
-        ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
-        if ftable == "":
-            return "correct"
-        fid = flow._flow_id(xdict, ftable, count)
-        if fid == -1:
-            return "correct"
-        else:
-            return "error"
-    elif act == "False":
-        command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:add-flow"
-        os.system(command)
-
-        xdict = flow._xml2dict(TEMPFILE)
-        ftable,count = flow._flow_data('ovs-ofctl dump-flows ' + BRIDGE_NAME)
-        fid = flow._flow_id(xdict, ftable, count)
-        if fid == -1:
-            return "error"
-        result = flow._verification(xdict, ftable, fid)
+        result = "correct" if flow._verification(xdict, ftable, count) == "error" else "error"
         return result
     else:
-        return "input error"
+        return "parameter error"
+
 
 def switchport_mode(interface):
     command = "ovs-vsctl set Interface " + interface + " type=external"
@@ -236,15 +207,11 @@ def switchport_mode(interface):
 
     command = "ovs-vsctl list Interface " + interface + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "type" in line and "external" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_switchport_mode(interface):
     command = "ovs-vsctl set Interface " + interface + " type=internal"
@@ -252,15 +219,11 @@ def no_switchport_mode(interface):
 
     command = "ovs-vsctl list Interface " + interface + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "type" in line and "internal" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def core_switch():
     global BRIDGE_NAME
@@ -269,15 +232,11 @@ def core_switch():
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "core-switch=\"true\"" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_core_switch():
     global BRIDGE_NAME
@@ -286,15 +245,11 @@ def no_core_switch():
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "core-switch" in line:
-            b = True
-    if b == True:
-        return "n"
-    else:
-        return "y"
+            return "error"
+    return "correct"
 
 def interface(interface):
     global BRIDGE_NAME
@@ -303,15 +258,11 @@ def interface(interface):
 
     command = "ovs-vsctl list-ports " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if interface in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_interface(interface):
     global BRIDGE_NAME
@@ -320,15 +271,11 @@ def no_interface(interface):
 
     command = "ovs-vsctl list-ports " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if interface in line:
-            b = True
-    if b == True:
-        return "n"
-    else:
-        return "y"
+            return "error"
+    return "correct"
 
 def interface_alias(name):
     global INTERFACE
@@ -337,15 +284,11 @@ def interface_alias(name):
 
     command = "ovs-vsctl list Interface "+ INTERFACE + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "alias=\"" + name + "\"" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_interface_alias(name):
     global INTERFACE
@@ -354,15 +297,11 @@ def no_interface_alias(name):
 
     command = "ovs-vsctl list Interface "+ INTERFACE + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "alias" in line:
-            b = True
-    if b == True:
-        return "n"
-    else:
-        return "y"
+            return "error"
+    return "correct"
 
 def switch_alias(name):
     global BRIDGE_NAME
@@ -371,15 +310,11 @@ def switch_alias(name):
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "alias=\"" + name + "\"" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_switch_alias(name):
     global BRIDGE_NAME
@@ -388,15 +323,11 @@ def no_switch_alias(name):
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "alias" in line:
-            b = True
-    if b == True:
-        return "n"
-    else:
-        return "y"
+            return "error"
+    return "correct"
 
 def tunnel_termination(arg):
     global BRIDGE_NAME
@@ -405,15 +336,11 @@ def tunnel_termination(arg):
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "tunnel=\"" + arg + "\"" in line:
-            b = True
-    if b == True:
-        return "y"
-    else:
-        return "n"
+            return "correct"
+    return "error"
 
 def no_tunnel_termination():
     global BRIDGE_NAME
@@ -422,16 +349,11 @@ def no_tunnel_termination():
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
-    b = False
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "tunnel" in line:
-            b = True
-    if b == True:
-        return "n"
-    else:
-        return "y"
-
+            return "error"
+    return "correct"
 
 
 
@@ -441,30 +363,29 @@ def main(p1, p2):
     ## ipv4-source and ipv4-destination must be x.x.x.x/32
     cmd = p1
     arg = p2
+    result = ""
     if cmd == "switch":
-        switch(arg)
+        result = switch(arg)
     elif cmd == "no switch":
-        no_switch(arg)
+        result = no_switch(arg)
     elif cmd == "action":
-        modifity("output-node-connector",arg)
+        result = modifity("output-node-connector",arg)
     elif cmd == "no action":
-        no_modifity("output-node-connector",arg)
+        result = no_modifity("output-node-connector",arg)
     elif cmd == "active":
-        active(arg)
-    elif cmd == "no active":
-        no_active(arg)
+        result = active(arg)
     elif cmd == "cookie":
-        modifity("cookie",arg)
+        result = modifity("cookie",arg)
     elif cmd == "no cookie":
-        no_modifity("cookie",arg)
+        result = no_modifity("cookie",arg)
     elif cmd == "dst-ip":
-        modifity("ipv4-destination",arg)
+        result = modifity("ipv4-destination",arg)
     elif cmd == "no dst-ip":
-        no_modifity("ipv4-destination",arg)
+        result = no_modifity("ipv4-destination",arg)
     elif cmd == "dst-mac":
-        modifity_2l("ethernet-destination", "address",arg)
+        result = modifity_2l("ethernet-destination", "address",arg)
     elif cmd == "no dst-mac":
-        no_modifity_2l("ethernet-destination", "address",arg)
+        result = no_modifity_2l("ethernet-destination", "address",arg)
     elif cmd == "dst-port":  
         if arg == "http":
             arg = "80"
@@ -474,7 +395,7 @@ def main(p1, p2):
             arg = "443"
         elif arg == "ssh":
             arg = "22"
-        modifity("tcp-destination-port",arg) 
+        result = modifity("tcp-destination-port",arg) 
     elif cmd == "no dst-port":
         if arg == "http":
             arg = "80"
@@ -484,7 +405,7 @@ def main(p1, p2):
             arg = "443"
         elif arg == "ssh":
             arg = "22"
-        no_modifity("tcp-destination-port",arg)
+        result = no_modifity("tcp-destination-port",arg)
     elif cmd == "ether-type":
         if arg == "arp":
             arg = "2054"
@@ -508,7 +429,7 @@ def main(p1, p2):
             arg = "33080"
         elif arg == "ipx":
             arg = "33079"
-        modifity_2l("ethernet-type", "type",arg)
+        result = modifity_2l("ethernet-type", "type",arg)
     elif cmd == "no ether-type":
         if arg == "arp":
             arg = "2054"
@@ -532,35 +453,35 @@ def main(p1, p2):
             arg = "33080"
         elif arg == "ipx":
             arg = "33079"
-        no_modifity_2l("ethernet-type", "type",arg)
+        result = no_modifity_2l("ethernet-type", "type",arg)
     elif cmd == "hard-timeout":
-        modifity("hard-timeout",arg)
+        result = modifity("hard-timeout",arg)
     elif cmd == "no hard-timeout":
-        no_modifity("hard-timeout",arg)
+        result = no_modifity("hard-timeout",arg)
     elif cmd == "idle-timeout":
-        modifity("idle-timeout",arg)
+        result = modifity("idle-timeout",arg)
     elif cmd == "no idle-timeout":
-        no_modifity("idle-timeout",arg)
+        result = no_modifity("idle-timeout",arg)
     elif cmd == "ingress-port":
-        modifity("in-port",arg)
+        result = modifity("in-port",arg)
     elif cmd == "no ingress-port":
-        no_modifity("in-port",arg)
+        result = no_modifity("in-port",arg)
     elif cmd == "priority":
-        modifity("priority",arg)
+        result = modifity("priority",arg)
     elif cmd == "no priority":
-        no_modifity("priority",arg)
+        result = no_modifity("priority",arg)
     elif cmd == "protocol":
-        modifity("ip-protocol",arg)
+        result = modifity("ip-protocol",arg)
     elif cmd == "no protocol":
-        no_modifity("ip-protocol",arg)
+        result = no_modifity("ip-protocol",arg)
     elif cmd == "src-ip":
-        modifity("ipv4-source",arg)
+        result = modifity("ipv4-source",arg)
     elif cmd == "no src-ip":
-        no_modifity("ipv4-source",arg)
+        result = no_modifity("ipv4-source",arg)
     elif cmd == "src-mac":
-        modifity_2l("ethernet-source", "address",arg)
+        result = modifity_2l("ethernet-source", "address",arg)
     elif cmd == "no src-mac":
-        no_modifity_2l("ethernet-source", "address",arg)
+        result = no_modifity_2l("ethernet-source", "address",arg)
     elif cmd == "src-port":
         if arg == "http":
             arg = "80"
@@ -570,7 +491,7 @@ def main(p1, p2):
             arg = "443"
         elif arg == "ssh":
             arg = "22"
-        modifity("tcp-source-port",arg)
+        result = modifity("tcp-source-port",arg)
     elif cmd == "no src-port":
         if arg == "http":
             arg = "80"
@@ -580,52 +501,53 @@ def main(p1, p2):
             arg = "443"
         elif arg == "ssh":
             arg = "22"
-        no_modifity("tcp-source-port",arg)
+        result = no_modifity("tcp-source-port",arg)
     elif cmd == "tos-bits":
-        modifity("ip-dscp",arg)
+        result = modifity("ip-dscp",arg)
     elif cmd == "no tos-bits":
-        no_modifity("ip-dscp",arg)
+        result = no_modifity("ip-dscp",arg)
     elif cmd == "vlan-id":
-        modifity_2l("vlan-id", "vlan-id",arg)
+        result = modifity_2l("vlan-id", "vlan-id",arg)
     elif cmd == "no vlan-id":
-        no_modifity_2l("vlan-id", "vlan-id",arg)
+        result = no_modifity_2l("vlan-id", "vlan-id",arg)
     elif cmd == "vlan-priority":
-        modifity("vlan-pcp",arg)
+        result = modifity("vlan-pcp",arg)
     elif cmd == "no vlan-priority":
-        no_modifity("vlan-pcp",arg)
-    elif cmd == "wildcards":  #match field
-        modifity("wildcards",arg)
+        result = no_modifity("vlan-pcp",arg)
+    elif cmd == "wildcards":  
+        result = "correct"
     elif cmd == "no wildcards":
-        no_modifity("wildcards",arg)
+        result = "correct"
     elif cmd == "flow-entry":
-        modifity("flow-name",arg)
+        result = modifity("flow-name",arg)
     elif cmd == "no flow-entry":
-        no_modifity("flow-name",arg)
+        result = no_modifity("flow-name",arg)
     elif cmd == "switch-port mode":
-        switchport_mode(arg)
+        result = switchport_mode(arg)
     elif cmd == "no switch-port mode":
-        no_switchport_mode(arg)
+        result = no_switchport_mode(arg)
     elif cmd == "core-switch":
-        core_switch()
+        result = core_switch()
     elif cmd == "no core-switch":
-        no_core_switch()
+        result = no_core_switch()
     elif cmd == "interface":
-        interface(arg)
+        result = interface(arg)
     elif cmd == "no interface":
-        no_interface(arg)
+        result = no_interface(arg)
     elif cmd == "interface-alias":
-        interface_alias(arg)
+        result = interface_alias(arg)
     elif cmd == "no interface-alias":
-        no_interface_alias(arg)
+        result = no_interface_alias(arg)
     elif cmd == "switch-alias":
-        switch_alias(arg)
+        result = switch_alias(arg)
     elif cmd == "no switch-alias":
-        no_switch_alias(arg)
+        result = no_switch_alias(arg)
     elif cmd == "tunnel termination":
-        tunnel_termination(arg)
+        result = tunnel_termination(arg)
     elif cmd == "no tunnel termination":
-        no_tunnel_termination()
+        result = no_tunnel_termination()
     else:
-        pass
+        return "no such command or syntax error"
+    return result
 #if __name__ == "__main__":
    # br_id_set()

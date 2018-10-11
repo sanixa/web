@@ -14,9 +14,9 @@ def _xml2dict(filename):
     for elem in tree.iter():
         elem.tag = elem.tag[31:]
         if isinstance(elem.tag,str):
-            elem.tag = elem.tag.decode('utf-8')
+            elem.tag = elem.tag#.decode('utf-8')
         if isinstance(elem.text,str):
-            elem.text = elem.text.decode('utf-8')
+            elem.text = elem.text#.decode('utf-8')
     root = tree.getroot()
     xmldict = XmlDictConfig(root)
     return xmldict

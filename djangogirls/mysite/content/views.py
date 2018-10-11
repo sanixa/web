@@ -94,7 +94,10 @@ def command(request):
             result = "not set environment variable"
         else:
             t = request.POST['c'].split(' ')
-            result = c.main(t[0], t[1])
+            if len(t) == 3:
+                result = c.main(t[0] + " " + t[1], t[2])
+            else:
+                result = c.main(t[0], t[1])
     return render(request, 'command.html',{
                   'result': result,
                  })

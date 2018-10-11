@@ -1,0 +1,23 @@
+_uuid               : d37dbaaa-0c00-41e8-bf67-5351da77ad88
+auto_attach         : []
+controller          : [fc7fe12b-ed25-4bc5-9a00-8ee02a058f8a]
+datapath_id         : "0000aaba7dd3e841"
+datapath_type       : ""
+datapath_version    : "<unknown>"
+external_ids        : {}
+fail_mode           : []
+flood_vlans         : []
+flow_tables         : {}
+ipfix               : []
+mcast_snooping_enable: false
+mirrors             : []
+name                : my-br
+netflow             : []
+other_config        : {datapath-id="0000"}
+ports               : [12900ae6-7c94-4282-bc45-abdc70b8f323]
+protocols           : []
+rstp_enable         : false
+rstp_status         : {}
+sflow               : []
+status              : {}
+stp_enable          : false
