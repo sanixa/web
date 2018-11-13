@@ -22,39 +22,66 @@
 	    margin: 0 auto auto 0;
 	    max-height: 100%;
 	    max-width: 100%;
+	}iframe:focus {
+    	outline: none;
+	}
+
+	iframe[seamless] {
+    	display: block;
 	}
 	  </style>
+
   </head>
   <body>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="jumbotron">
-				<h2>
-					虛擬化資訊安全驗證系統
-				</h2>
-
+			<div class="row">
+				<div class="col-md-6">
+					<nav>
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item">
+								<a href="/index/">Home</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="http://127.0.0.1:8181/index.html">Config</a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+				<div class="col-md-6">
+				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4">
-					<p>
-						驗證opendaylight命令
-					</p> 
-					<a href="/command/" class="btn btn-primary" type="button">Button</a>
+				<div class="col-md-12">
+					<h3>
+						派送命令並驗證
+					</h3>
 				</div>
-				<div class="col-md-4">
-					<p>
-						驗證switch繞送
-					</p> <a href="/route/" class="btn btn-primary" type="button">Button</a>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<form action="/command/" method="post">
+                                        {% csrf_token %}
+						<button type="submit" class="btn btn-primary">
+							送出
+						</button>
+
+					</form>
 				</div>
-				<div class="col-md-4">
-					<p>
-						驗證service function chain的網路拓樸
- 					</p> <a href="/sfc/" class="btn btn-primary" type="button">Button</a>
+				<div class="col-md-6">
+					<h2>
+						網路拓樸
+					</h2>
+					 <iframe id="encoder_iframe" width="250px" height="300px" frameborder="0"  src="/sfc_config/">
+					</iframe>
+					
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-</body>
+
+
+  </body>
 </html>

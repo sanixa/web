@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views.decorators import csrf
 import content.modsecurity.func as mod
 import content.route.func as r
@@ -10,29 +10,9 @@ import os,time
 
 # Create your views here.
 
-def modsecurity(request):
-    #status = mod.nginx()
-    return render(request, 'modsecurity.html', {
-        'nginx_status': str(mod.nginx()),
-    })
 
 def index(request):
     return render(request, 'index.html',{})
-def mod_l(request):
-    return render(request, 'mod_l.html',{
-        'nginx_status': str(mod.nginx()),
-        'mod_status': str(mod.nginx_modsecurity())
-    })
-def mod_m(request):
-    ctx ={}
-    if request.POST:
-        rlt = mod.mod_custom_rule(request.POST['q'])
-        ctx['rlt'] = "ADD" + request.POST['q'] + " " + rlt
-    return render(request, "mod_m.html", ctx)
-
-def mod_m_re(request):
-    mod.restart_nginx()
-    return render(request, 'mod_m_re.html',{})
 
 def route(request):
     ctx = {}
@@ -109,5 +89,9 @@ def command_config(request):
         com.objects.create(address=request.POST['ip'], user=request.POST['user'], passwd=request.POST['passwd'], bridge=request.POST['bridge'], interface=request.POST['interface'])
     return render(request, 'command_config.html',{})
 
-def temp(request):
-    return render(request, 'temp.html',{})
+def sfc(request):
+    return render(request, 'sfc.html',{})
+
+def sfc_config(request):
+    return redirect("http://127.0.0.1:8181/index.html")
+

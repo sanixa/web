@@ -18,15 +18,11 @@ from django.contrib import admin
 from content.views import *
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    #url(r'^hello/$', hello_world),
-    url(r'^modsecurity/', modsecurity),
     url(r'^index/', index),
-    url(r'^mod_l/', mod_l),
-    url(r'^mod_m/re/', mod_m_re),
-    url(r'^mod_m/', mod_m),
     url(r'^route/', route),
     url(r'^route_config/', route_config),
     url(r'^command/', command),
     url(r'^command_config', command_config),
-    url(r'^temp/', temp),
+    url(r'^sfc/', sfc),
+    url(r'^sfc_config/', sfc_config),
 ]
