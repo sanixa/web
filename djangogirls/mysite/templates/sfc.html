@@ -54,14 +54,17 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h3>
-						派送命令並驗證
-					</h3>
+					<h2>
+						服務功能鏈測試
+					</h2>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-					<form action="/command/" method="post">
+					<h4>
+						發送測試封包
+					</h4>
+					<form action="/sfc/?t=s" method="post">
                                         {% csrf_token %}
 						<button type="submit" class="btn btn-primary">
 							送出
@@ -70,12 +73,10 @@
 					</form>
 				</div>
 				<div class="col-md-6">
-					<h2>
+					<h4>
 						網路拓樸
-					</h2>
-					 <iframe id="encoder_iframe" width="250px" height="300px" frameborder="0"  src="/sfc_config/">
-					</iframe>
-					
+					</h4>
+
 				</div>
 			</div>
 		</div>

@@ -139,7 +139,8 @@ def _send(q,s1,s2):
     #s1.acquire()
     ns1_content = ns1.objects.all()[0]
     ns2_content = ns2.objects.all()[0]
-    ns2_content.address = ns2_content.address[:ns2_content.address.find('/')]
+    if ns2_content.address.find('/') != -1:
+        ns2_content.address = ns2_content.address[:ns2_content.address.find('/')]
     c = 'sudo ip netns exec ' + ns1_content.name + ' ping -c 1 ' + ns2_content.address
     output = sub.check_output(c , shell=True)
     q.put(output)
@@ -147,7 +148,7 @@ def _send(q,s1,s2):
 def _receive(q,s1,s2):
     ovs2_content = ovs2.objects.all()[0]
     ns2_content = ns2.objects.all()[0]
-    c = 'sudo ip netns exec ' + ns2_content.name + ' tcpdump -i ' + ovs2_content.port + ' -c 1 icmp'
+    c = 'sudo ip netns exec ' + ns2_content.name + ' tcpdump -i ' + ovs2_content.port + ' -c 1 icmp &'
     output = sub.check_output(c, shell=True)
     #s1.release()
     q.put(output)

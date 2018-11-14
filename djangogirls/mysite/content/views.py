@@ -90,6 +90,8 @@ def command_config(request):
     return render(request, 'command_config.html',{})
 
 def sfc(request):
+    if 't' in request.GET and request.GET['t'] == 's':
+        pass
     return render(request, 'sfc.html',{})
 
 def sfc_config(request):
