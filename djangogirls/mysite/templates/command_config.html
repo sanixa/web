@@ -25,7 +25,8 @@
 	}
 	  </style>
   </head>
-  <body>
+ {% load static %}
+<body background="{% static "images/back_new.png" %}">
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -47,9 +48,8 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h3>
-						參數設定
-					</h3>
+					
+					<b><font size="7">參數設定</font></b>
 				</div>
 			</div>
 			<div class="row">
@@ -58,37 +58,37 @@
                                         {% csrf_token %}
  						<div class="form-group">
 					 
-						<label>
+						<p><b><font size="6">
 							Opendaylight IP
-						</label>
+						</font></b></p>
 						<input class="form-control" name="ip" type="text" />
 						</div>
 						<div class="form-group">
 					 
-						<label>
+						<p><b><font size="6">
 							Opendaylight 使用者名稱
-						</label>
+						 </font></b></p>
 						<input class="form-control" name="user" type="text" />
 						</div>
 						<div class="form-group">
 					 
-						<label>
+						 <p><b><font size="6">
 							Opendaylight 密碼
-						</label>
+						 </font></b></p>
 						<input class="form-control" name="passwd" type="text" />
 						</div>
 						<div class="form-group">
 					 
-						<label>
+						 <p><b><font size="6" >
 							open vSwitch 網橋名稱
-						</label>
+						 </font></b></p>
 						<input class="form-control" name="bridge" type="text" />
 						</div>
 						<div class="form-group">
 					 
-						<label>
+						 <p><b><font size="6">
 							網卡名稱
-						</label>
+						</font></b></p>
 						<input class="form-control" name="interface" type="text" />
 						</div>
 						<button type="submit" class="btn btn-primary">

@@ -25,7 +25,8 @@
 	}
 	  </style>
   </head>
-  <body>
+{% load static %}
+<body background="{% static "images/back_new.png" %}">
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -47,9 +48,9 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h3>
+					<b><font size="7"> 
 						派送命令並驗證
-					</h3>
+					</font></b>
 				</div>
 			</div>
 			<div class="row">
@@ -58,9 +59,7 @@
                                         {% csrf_token %}
  						<div class="form-group">
 					 
-						<label>
-							命令
-						</label>
+						<b><font size="6">	命令</font></b>
 						<input class="form-control" name="c" type="text" />
 						</div>
 						<button type="submit" class="btn btn-primary">
@@ -70,15 +69,13 @@
 					</form>
 				</div>
 				<div class="col-md-6">
-					<h2>
+					 <b><font size="6">
 						結果
-					</h2>
+					</font></b>
 					<p>
 						{{ result }}
 					</p>
-					<p>
-						<a class="btn" href="#">View details »</a>
-					</p>
+				
 				</div>
 			</div>
 		</div>

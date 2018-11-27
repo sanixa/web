@@ -32,7 +32,9 @@
 	  </style>
 
   </head>
-  <body>
+{% load static %}
+<body background="{% static "images/back_new.png" %}">
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
@@ -44,7 +46,7 @@
 								<a href="/index/">Home</a>
 							</li>
 							<li class="breadcrumb-item">
-								<a href="http://127.0.0.1:8181/index.html">Config</a>
+								<a href="/sfc_config/">Config</a>
 							</li>
 						</ol>
 					</nav>
@@ -54,28 +56,55 @@
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h2>
+					<p><b><font size="7" > 
 						服務功能鏈測試
-					</h2>
+					</font></b></p>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-					<h4>
-						發送測試封包
-					</h4>
-					<form action="/sfc/?t=s" method="post">
+					
+					<form action="/sfc/" method="post">
                                         {% csrf_token %}
+						<div class="form-group">
+						<p><b><font size="6" > 
+							SFF IP
+						</font></b></p>
+						<input class="form-control" name="a" type="text" />
+						</div>
+ 						<div class="form-group">
+					 
+						<p><b><font size="6" > 
+							SFF Port
+						</font></b></p>
+						<input class="form-control" name="b" type="text" />
+						</div>
+ 						<div class="form-group">
+					 
+						<p><b><font size="6" > 
+							SFC ID
+						</font></b></p>
+						<input class="form-control" name="c" type="text" />
+						</div>
+ 						<div class="form-group">
+					 
+						<p><b><font size="6" > 
+							SFC Index
+						</font></b></p>
+						<input class="form-control" name="d" type="text" />
+						</div>
 						<button type="submit" class="btn btn-primary">
 							送出
 						</button>
 
 					</form>
+                                        <p> {{ result1 }} </p>
+                                        <p> {{ result2 }} </p>
 				</div>
 				<div class="col-md-6">
-					<h4>
+					<p><b><font size="6" > 
 						網路拓樸
-					</h4>
+					</font></b></p>
 
 				</div>
 			</div>
