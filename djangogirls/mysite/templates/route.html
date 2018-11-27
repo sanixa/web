@@ -25,7 +25,8 @@
 	}
 	  </style>
   </head>
-  <body>
+{% load static %}
+<body background="{% static "images/back_new.png" %}">
 
     <div class="container-fluid">
 	<div class="row">
@@ -56,7 +57,7 @@
 	</div> 
 	<div class="row">
 		<div class="col-md-12">
-                    <h2>trace routeing</h2>
+                    <p><b><font size="7" >路由追蹤 </font></b></p>
 		</div>
 	</div>
 	<div class="row">
@@ -64,41 +65,32 @@
 		<div class="col-md-3">
 	<a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns1 }} data-title="namespace1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
 
-			<h2>
-				sender
-                               
-			</h2>
+			<p><b><font size="6" >發送端 </font></b></p>
                        {% if created %}
-			<button type ="button" class="btn btn-outline-primary btn-lg" onclick="javascript:location.href='/route/?t=s'" value="send">Send</button>
+			<button type ="button" class="btn btn-outline-primary btn-lg" onclick="javascript:location.href='/route/?t=s'" value="send">發送</button>
 			{% else %}
 			{% endif %}
                         <p>{{ send_o }} </p>
 		</div>
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs1 }} data-title="open vSwitch1"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a>  
-			<h2>
-				flow action
-			</h2>
+			<p><b><font size="6" >行為 </font></b></p>
                         <p> {{ ovs1_output }} </p>
 			<button type="button" class="btn btn-outline-primary btn-lg" data-toggle="popover" data-placement="bottom" title="result" data-content= {{ ovs1_detail }}>
-				Detail
+				詳細說明
 			</button>
 		</div>
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ovs2 }} data-title="open vSwitch2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/route.png" %}"></a> 
-			<h2>
-				flow action
-			</h2>
+			<p><b><font size="6" >行為 </font></b></p>
 			<p> {{ ovs2_output }} </p> 
 			<button type="button" class="btn btn-outline-primary btn-lg" data-toggle="popover" data-placement="bottom" title="result" data-content= {{ ovs2_detail }} >
-				Detail
+				詳細說明
 			</button>
 		</div>
 		<div class="col-md-3">
 <a href="#" class="bind_hover_card" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-content={{ ns2 }} data-title="namespace2"><img class="commentAvatarImage" alt="Bootstrap Image Preview" src="{% static "images/ns.png" %}"></a>  
-			<h2>
-				receiver
-			</h2>
+			<p><b><font size="6" > 接收端</font></b></p>
 			<p> {{ rec_o }} </p> 
                        
 		</div>

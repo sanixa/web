@@ -2,6 +2,7 @@ import os
 import sys
 import subprocess
 import json
+import shlex
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -32,18 +33,25 @@ def br_id_find():
     global USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X GET --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operational/opendaylight-inventory:nodes/"
     output = subprocess.check_output(command, shell=True)
+    output2 = subprocess.check_output(command , shell=True)
     j = json.loads(output.decode('utf-8'))
-    i = 0
-    while True:
+    x,y = 0,0
+    name = ""
+    for x in range(10000):
+        for y in range(10000):
+            try:
+                name = j['nodes']['node'][x]['node-connector'][y]['flow-node-inventory:name']
+            except IndexError:
+                break
+            else:
+                if name == BRIDGE_NAME:
+                    t = j['nodes']['node'][x]['id']
+                    return t[t.find(":")+1:]
         try:
-            name = j['nodes']['node'][i]['node-connector'][0]['flow-node-inventory:name']
-        except KeyError:
+            name = j['nodes']['node'][x+1]['node-connector'][0]['flow-node-inventory:name']
+        except IndexError:
             return "error"
-        else:
-            if name == BRIDGE_NAME:
-                t = j['nodes']['node'][i]['id']
-                return t[t.find(":")+1:]
-        i+=1
+        
    
 def br_id_set():
     with open(TEMPFILE, "r+") as f:
@@ -57,7 +65,9 @@ def br_id_set():
         else:
             content = content[:t1+1] + t + content[t2:]
         f.seek(0,0)
-        f.write(content)
+        os.system("echo " + shlex.quote(content) + " > content/command/temp.xml")
+        #print(content)
+        #f.write(content)
 
 def xml(filename, col, content):
     ET.register_namespace('',"urn:opendaylight:flow:service")
@@ -97,6 +107,7 @@ def modifity(key,action):
     xml("content/command/add.xml", key, action)
     if br_id_set() == "error":
         return "xml file error"
+
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
     command = "curl -X POST -H \"Content-Type: application/xml\" -d @" + TEMPFILE + " --user "+USERNAME+":"+PASSWORD+" http://" + ODL_HOST + ":8080/restconf/operations/sal-flow:add-flow"
     os.system(command)
@@ -150,8 +161,10 @@ def no_modifity_2l(key1, key2,action):
     return result
 
 def switch(arg):
-    global BRIDGE_NAME
+    global BRIDGE_NAME,ODL_HOST
     os.system("ovs-vsctl add-br " + BRIDGE_NAME)
+    os.system("ovs-vsctl add-port " + BRIDGE_NAME + " " + BRIDGE_NAME)
+    os.system("ovs-vsctl set-controller " + BRIDGE_NAME + " tcp:" + ODL_HOST + ":6633")
     s = "ovs-vsctl set bridge " + BRIDGE_NAME +" other-config:datapath-id=" + str(arg)
     os.system(s)
 
@@ -232,6 +245,8 @@ def core_switch():
 
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
+
+    print ("aaa")
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "core-switch=\"true\"" in line:
@@ -522,9 +537,9 @@ def main(p1, p2):
         result = modifity("flow-name",arg)
     elif cmd == "no flow-entry":
         result = no_modifity("flow-name",arg)
-    elif cmd == "switch-port mode":
+    elif cmd == "switchport mode":
         result = switchport_mode(arg)
-    elif cmd == "no switch-port mode":
+    elif cmd == "no switchport mode":
         result = no_switchport_mode(arg)
     elif cmd == "core-switch":
         result = core_switch()

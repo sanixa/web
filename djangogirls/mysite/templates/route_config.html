@@ -16,7 +16,9 @@
 	}
 	  </style>
 </head>
-<body>
+{% load static %}
+<body background="{% static "images/back_new.png" %}">
+
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-6">
@@ -36,9 +38,7 @@
 	</div>
 	<div class="row">
 		<div class="col-md-12">
-			<h3>
-				驗證環境設定
-			</h3>
+				<p><b><font size="7" > 驗證環境設定</font></b></p>
 		</div>
 	</div>
 	<div class="row">
@@ -64,39 +64,39 @@
 			    <div class="col-md-3">
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						網路命名空間名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ns-name1" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						端口位址
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ns-port-address1" type="text" />
 				</div>
 			    </div>
 			    <div class="col-md-3">
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						Open vSwitch 名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ovs-name1" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						Open vSwitch 端口名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ovs-port-name1" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						OpenFlow 端口號碼
-					</label>
+					</font></b></p>
 					<input class="form-control" name="openflow-port-number1" type="text" />
 				</div>
 			    </div>
@@ -104,23 +104,23 @@
 			    <div class="col-md-3">
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						Open vSwitch 名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ovs-name2" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						Open vSwitch 端口名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ovs-port-name2" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						OpenFlow 端口號碼
-					</label>
+					</font></b></p>
 					<input class="form-control" name="openflow-port-number2" type="text" />
 				</div>
 
@@ -128,16 +128,16 @@
                             <div class="col-md-3">
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						網路命名空間名稱
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ns-name2" type="text" />
 				</div>
 				<div class="form-group">
 					 
-					<label>
+					<p><b><font size="6" > 
 						端口位址
-					</label>
+					</font></b></p>
 					<input class="form-control" name="ns-port-address2" type="text" />
 				</div>
 			    </div>

@@ -25,32 +25,42 @@
 	}
 	  </style>
   </head>
-  <body>
+{% load static %}
+  <body background="{% static "images/back.png" %}">
 <div class="container-fluid">
 	<div class="row">
+		{% load static %}
 		<div class="col-md-12">
-			<div class="jumbotron">
-				<h2>
-					虛擬化資訊安全驗證系統
-				</h2>
+			<div class="col-md-10">
+				<div class="jumbotron">
+					<b><font size="7">
+						虛擬化資訊安全驗證系統
+					</font></b>
 
-			</div>
+				</div>
+			</div>                        
+			<div class="col-md-2">
+					<img src="{% static "images/logo.png" %}">				
+                        </div>
+
 			<div class="row">
 				<div class="col-md-4">
-					<p>
-						驗證opendaylight命令
-					</p> 
+					<p><b>
+						<font color="white" size="6">驗證opendaylight命令</font>
+					</b></p> 
 					<a href="/command/" class="btn btn-primary" type="button">Button</a>
 				</div>
 				<div class="col-md-4">
-					<p>
-						驗證switch繞送
-					</p> <a href="/route/" class="btn btn-primary" type="button">Button</a>
+					<p><b>
+						<font color="white" size="6">驗證switch繞送</font>
+					</b></p> 
+					<a href="/route/" class="btn btn-primary" type="button">Button</a>
 				</div>
 				<div class="col-md-4">
-					<p>
-						驗證service function chain的網路拓樸
- 					</p> <a href="/sfc/" class="btn btn-primary" type="button">Button</a>
+					<p><b>
+						<font color="white" size="6">驗證service function chain的網路拓樸</font>
+ 					</b></p> 
+					<a href="/sfc/" class="btn btn-primary" type="button">Button</a>
 				</div>
 			</div>
 		</div>

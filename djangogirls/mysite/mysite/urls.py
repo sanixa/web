@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^command_config', command_config),
     url(r'^sfc/', sfc),
     url(r'^sfc_config/', sfc_config),
+    url(r'^', index),
 ]

@@ -6,7 +6,7 @@ import content.command.func as c
 from content.models import ovs1,ovs2,ns1,ns2
 from content.models import command as com
 import subprocess as sub
-import os,time
+import os,time,requests
 
 # Create your views here.
 
@@ -48,6 +48,7 @@ def route(request):
         ctx['ovs2'] = str('openvSwitchName:') + ovs2_content.name + '<br>' + str('openvSwitchInterfaceName:') + ovs2_content.port + '<br>' + str('openvSwitchOpenflowNumber:') + ovs2_content.number              
         ctx['ns1'] = str('nameSpaceName:') + ns1_content.name + '<br>' + str('nameSpaceInterfaceName:') + ovs1_content.port + '<br>' + str('nameSpaceAddress:') + ns1_content.address             
         ctx['ns2'] = str('nameSpaceName:') + ns2_content.name + '<br>' + str('nameSpaceInterfaceName:') + ovs2_content.port + '<br>' + str('nameSpaceAddress:') + ns2_content.address            
+    print("aaa")
     return render(request, 'route.html',ctx)
 def route_config(request):
     if request.POST:
@@ -68,10 +69,12 @@ def route_config(request):
 def command(request):
     result = ""
     if request.POST:
-        if request.POST['c'].find(" ") == -1:
-            result = "command error"
-        elif c.init() == "no data":
+        if c.init() == "no data":
             result = "not set environment variable"
+        elif request.POST['c'] == "core-switch":
+            result = c.main("core-switch", 0)
+        elif request.POST['c'].find(" ") == -1:
+            result = "command error"
         else:
             t = request.POST['c'].split(' ')
             if len(t) == 3:
@@ -90,10 +93,13 @@ def command_config(request):
     return render(request, 'command_config.html',{})
 
 def sfc(request):
-    if 't' in request.GET and request.GET['t'] == 's':
-        pass
+    if request.POST:
+        result = requests.post("http://192.168.30.196:5000/sfc/?a=" + request.POST['a'] + "&b=" + request.POST['b'] + "&c=" + request.POST['c'] + "&d=" + request.POST['d']).content.decode('utf-8')
+        temp = result.split('&')
+        result1 = temp[0]
+        result2 = temp[1]
+        return render(request, 'sfc.html',{'result1': result1, 'result2': result2})
     return render(request, 'sfc.html',{})
 
 def sfc_config(request):
-    return redirect("http://127.0.0.1:8181/index.html")
-
+    return redirect("http://140.116.82.53:8181/index.html")
