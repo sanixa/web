@@ -48,7 +48,6 @@ def route(request):
         ctx['ovs2'] = str('openvSwitchName:') + ovs2_content.name + '<br>' + str('openvSwitchInterfaceName:') + ovs2_content.port + '<br>' + str('openvSwitchOpenflowNumber:') + ovs2_content.number              
         ctx['ns1'] = str('nameSpaceName:') + ns1_content.name + '<br>' + str('nameSpaceInterfaceName:') + ovs1_content.port + '<br>' + str('nameSpaceAddress:') + ns1_content.address             
         ctx['ns2'] = str('nameSpaceName:') + ns2_content.name + '<br>' + str('nameSpaceInterfaceName:') + ovs2_content.port + '<br>' + str('nameSpaceAddress:') + ns2_content.address            
-    print("aaa")
     return render(request, 'route.html',ctx)
 def route_config(request):
     if request.POST:

@@ -246,7 +246,6 @@ def core_switch():
     command = "ovs-vsctl list bridge " + BRIDGE_NAME + " > temp"
     os.system(command)
 
-    print ("aaa")
     f = open('temp', 'r')
     for line in f:
         if "other_config" in line and "core-switch=\"true\"" in line:
