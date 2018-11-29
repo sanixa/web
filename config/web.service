@@ -1,0 +1,15 @@
+[Unit]
+Description=Web
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/web
+EnvironmentFile=/etc/environment
+ExecStart=/opt/web/djangogirls/mysite/manage.py runserver 0.0.0.0:8000
+Restart=always
+RestartSec=15s
+
+[Install]
+WantedBy=multi-user.target
