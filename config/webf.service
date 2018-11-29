@@ -1,0 +1,15 @@
+[Unit]
+Description=Web
+After=network-online.target web.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/web
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c 'while :; do curl http://localhost:8000/route/?t=s -s --output /dev/null; done'
+Restart=always
+RestartSec=15s
+
+[Install]
+WantedBy=multi-user.target
