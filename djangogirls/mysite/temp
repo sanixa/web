@@ -1,6 +1,6 @@
-_uuid               : 304df669-6cc7-4a8f-968e-ef0af0791fb5
+_uuid               : ca343b35-b8f1-4ab1-9ba5-e4d8aa9c5b2e
 auto_attach         : []
-controller          : [532c27c5-0b4b-4be7-ac3d-7f0a9a7ef97a]
+controller          : [2bff80bc-c35d-450c-9ba1-852969cc9c98]
 datapath_id         : "0000000000000001"
 datapath_type       : ""
 datapath_version    : "<unknown>"
@@ -13,8 +13,8 @@ mcast_snooping_enable: false
 mirrors             : []
 name                : "br0"
 netflow             : []
-other_config        : {datapath-id="0000000000000001"}
-ports               : [29add259-fe57-4e25-abb6-7bd37922e3dd]
+other_config        : {core-switch="true", datapath-id="0000000000000001"}
+ports               : [b2afda89-bddc-4655-a3c8-9cb1477b2048]
 protocols           : []
 rstp_enable         : false
 rstp_status         : {}

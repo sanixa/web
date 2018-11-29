@@ -70,6 +70,12 @@ def br_id_set():
         #f.write(content)
 
 def xml(filename, col, content):
+    if col == "ipv4-destination" and content.find("/") == -1:
+        content = content + "/32"
+    if col == "ipv4-source" and content.find("/") == -1:
+        content = content + "/32"
+    print (col)
+    print (content)
     ET.register_namespace('',"urn:opendaylight:flow:service")
     tree = ET.ElementTree(file=filename)
     for elem in tree.iter():
@@ -133,7 +139,7 @@ def no_modifity(key,action):
     return result
 
 def modifity_2l(key1, key2, action):
-    xml2("add.xml", key1, key2, action)
+    xml2("content/command/add.xml", key1, key2, action)
     if br_id_set() == "error":
         return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
@@ -146,7 +152,7 @@ def modifity_2l(key1, key2, action):
     return result
 
 def no_modifity_2l(key1, key2,action):
-    xml2("add.xml", key1, key2, action)
+    xml2("content/command/add.xml", key1, key2, action)
     if br_id_set() == "error":
         return "xml file error"
     global TEMPFILE,USERNAME,PASSWORD,ODL_HOST,BRIDGE_NAME
